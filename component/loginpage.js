@@ -9,20 +9,29 @@ const LoginPage = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-
+    
     if (email === "admin@example.com" && password === "123456") {
       localStorage.setItem("isLoggedIn", "true");
       localStorage.setItem("role", "admin");
       alert("Admin login successful!");
-      router.push("/blogB"); 
-    } else if (email === "user@example.com" && password === "123456") {
+      router.push("/blogB");
+      return;
+    }
+
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const foundUser = users.find(
+      (user) => user.email === email && user.password === password
+    );
+
+    if (foundUser) {
       localStorage.setItem("isLoggedIn", "true");
       localStorage.setItem("role", "user");
+      localStorage.setItem("currentUser", foundUser.name);
       alert("User login successful!");
       router.push("/blogA");
     } else {
       alert(
-        "Invalid credentials. Try:\nAdmin: admin@example.com / 123456\nUser: user@example.com / 123456"
+        "Invalid credentials.\nAdmin: admin@example.com / 123456\nOr signup as a new user."
       );
     }
   };
@@ -65,7 +74,10 @@ const LoginPage = () => {
       </button>
 
       <p className="login-footer">
-        Don’t have an account? <a href="#">Sign up</a>
+        Don’t have an account?{" "}
+        <a href="/signupA" style={{ color: "#e63946", textDecoration: "underline" }}>
+          Sign up
+        </a>
       </p>
     </form>
   );
